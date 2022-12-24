@@ -1,0 +1,9 @@
+node_modules/
+_node_modules/
+dist/
+.vscode/
+out/
+logs/
+.DS_Store
+cache/
+cache2/
