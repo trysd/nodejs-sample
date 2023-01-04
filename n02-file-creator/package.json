@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/index.js",
+    "file": "node dist/index.js",
     "ts-node-dev": "ts-node-dev --respawn src/index.ts",
-    "dev": "ts-node-dev --respawn src/index.ts",
+    "dev": "ts-node-dev --respawn --watch x.files.map.json src/index.ts",
     "build": "tsc"
   },
   "author": "",

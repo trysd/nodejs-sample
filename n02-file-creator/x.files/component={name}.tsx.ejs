@@ -1,20 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-<%= components %>
-
-<%= states %>
-
-const <%= name %> = (<%= props %>) => {
+/** <%= comment %> */
+const <%= name %> = () => {
   return (
-    <div css={main}>
-      <%= jsx %>
-    </div>
+    <>
+      <%= name %>
+      <div css={main}>
+      </div>
+    </>
   );
 }
-
 const main = css`
   margin: 0;
 `;
-
 export default <%= name %>
+

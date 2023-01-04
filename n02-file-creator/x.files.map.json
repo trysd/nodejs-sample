@@ -1,0 +1,57 @@
+{
+  "//memo": {
+    ".": [
+      "・tsで操作するのは、フォルダとファイル作成",
+      "・後はプロパティをテンプレートに渡し、てテンプレート側でカスタマイズする",
+      "$component : カレントフォルダの component= で宣言済の name 配列を返す",
+      "../$component : 一つ下のフォルダの component= で宣言済の name 配列を返す",
+      "キーimportは、単なる目印で、ejsに渡すだけ。期待する使用方法はimport宣言等。exportも同様",
+      "JSON読み取り",
+      ""
+    ]
+  },
+  "src/": {
+    "components/": {
+      "Elements/": {
+        "Buttons/": {
+          "component=DialogOpen": {
+            "comment": "Dialog open button."
+          },
+          "component=DialogClose": {
+            "comment": "Dialog close button."
+          },
+          "story=Buttons": {
+            "import": "@component"
+          },
+          "index=": {
+            "import": "@component"
+          },
+          "__tests__/": {
+            "test=Buttons": {
+              "import": "../@component"
+            }
+          }
+        }
+      },
+      "//Feature/": {
+        "SignUp/": {
+          "component=SignUp": {
+            "comment": "user registration.",
+            "route": [
+              "components/Feature/SignUpConfirm"
+            ]
+          },
+          "SignUpConfirm": {
+            "comment": "user registration confirm.",
+            "route": [
+              "components/Feature/SignUpResult"
+            ]
+          },
+          "SignUpResult": {
+            "comment": "user registration result."
+          }
+        }
+      }
+    }
+  }
+}
