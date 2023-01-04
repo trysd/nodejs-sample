@@ -3,6 +3,7 @@ import fs = require('fs-extra');
 import ejs = require('ejs');
 
 import { AnalyzeJson } from './AnalyzeJson';
+import { MTemplate } from './MTemplate';
 
 // とりあえず自分で使い勝手がいいものを作る
 
@@ -33,22 +34,28 @@ import { AnalyzeJson } from './AnalyzeJson';
 /** .. */
 export default class Main {
   private static tplDir = 'x.files';
+  private static mapFile = 'x.files.map.json';
+  private json = new AnalyzeJson(Main.mapFile);
+  private base = path.resolve();
 
-  json = new AnalyzeJson("./x.files.map.json");
-
-  base = path.resolve();
+  private template = MTemplate.getInstance();
+  private baseTpl = null;
+  private convertedJson = null;
 
   /** main */
   public main(): void {
 
     // Convert to an array representing what should be created where
-    const convertedJson = this.json.analyze();
+    this.convertedJson = this.json.analyze();
+    console.dir(this.convertedJson, { depth: null })
 
-    // ..
-    console.dir(convertedJson, { depth: null })
-    console.log("path: " + this.base);
-
-
+    // read template
+    try {
+      this.baseTpl = this.template.getAllTemplate(Main.tplDir);
+      // console.log(this.baseTpl)
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 
   // ===========

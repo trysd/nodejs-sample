@@ -3,12 +3,10 @@ import fs = require('fs-extra');
 /** Converted type */
 export interface ConvertedJson {
   props: unknown,
-  system: {
-    file: string,
-    name: string,
-    path: string[],
-    pathStr: string
-  }
+  tpl: string, // template
+  name: string,
+  path: string[],
+  pathStr: string
 }
 
 /** Class to parse map JSON */
@@ -54,11 +52,14 @@ export class AnalyzeJson {
     const annoFileType = val.replace(/^.*\@/, '');
     const responseList: { name: string, path: string }[] = [];
     const backCount = (val.match(/\.\.\//g) || []).length;
-    const targetPath = objRef.system.path.slice(0, objRef.system.path.length - backCount);
+    const targetPath = objRef.path.slice(0, objRef.path.length - backCount);
     arrRef.forEach((cj, i) => {
-      if (i != index && targetPath.join("") === cj.system.path.join("") && annoFileType === cj.system.file) {
+      if (i != index
+        && targetPath.join("") === cj.path.join("")
+        && annoFileType === cj.tpl
+      ) {
         responseList.push({
-          name: cj.system.name,
+          name: cj.name,
           path: '../'.repeat(backCount),
         })
       }
@@ -98,12 +99,12 @@ export class AnalyzeJson {
         const keySplitted = key.split('=');
         arr.push({
           props: json[key],
-          system: {
-            file: keySplitted[0],
-            name: keySplitted[1],
-            path: path,
-            pathStr: path.join("")
-          }
+
+          tpl: keySplitted[0],
+          name: keySplitted[1],
+          path: path,
+          pathStr: path.join("")
+
         })
       }
     });
