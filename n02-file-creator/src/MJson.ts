@@ -1,6 +1,7 @@
 import { ReservedWord } from './NReservedWord';
 import fs = require('fs-extra');
 import { Tpl } from './MTemplate';
+import YAML = require('yaml');
 
 /** Converted type */
 export interface ConvertedJson {
@@ -50,7 +51,7 @@ export class MJson {
             throw new Error(
               `object: ${path.join("") + key}`
               + `\nThe reserved word "${f}" cannot be used as an item name.`
-              );
+            );
           }
         });
       }
@@ -161,10 +162,12 @@ export class MJson {
    * @returns 
    */
   public readJson(): unknown {
-    const jsonStr = fs.readFileSync(MJson.JsonURL).toString();
-    const json = JSON.parse(jsonStr);
-    this.removeJsonCommentOut(json);
-    return json;
+    const str = fs.readFileSync(MJson.JsonURL, 'utf8').toString();
+    const obj = MJson.JsonURL.match(/\.yml$|\.yaml$/)
+      ? YAML.parse(str)
+      : JSON.parse(str);
+    this.removeJsonCommentOut(obj);
+    return obj;
   }
 
   /**
