@@ -1,8 +1,9 @@
 import path = require('path');
 import fs = require('fs-extra');
 import { MFile } from './MFile';
-import { ConvertedJson } from './AnalyzeJson';
+import { ConvertedJson } from './MJson';
 import ejs = require('ejs');
+import { ArgvOptions } from '.';
 
 export interface Tpl {
   [keys: string]: {
@@ -28,21 +29,32 @@ export class MTemplate {
    * @param jsonArr 
    * @param tpl 
    */
-  public writeFile(jsonArr: ConvertedJson[], tpl: Tpl): void {
+  public writeFile(jsonArr: ConvertedJson[], tpl: Tpl, options: ArgvOptions): void {
+
+    if (!options.force) {
+      jsonArr.forEach(m => {
+        const fileName = tpl[m.tpl].fileName.replace(/{name}/, m.name).replace(/\.ejs$/, '');
+        fs.pathExists(m.pathStr + fileName, (err, exists) => {
+          if (exists) {
+            throw new Error(
+              'File to write already exists.'
+              + `\ntarget: ${tpl[m.tpl].fileName}`
+              + `\nexists: ${m.pathStr + fileName}`
+              + `\nhint: -f option will force overwriting`);
+          }
+        })
+      });
+    }
 
     jsonArr.forEach(m => {
-      const fileName = tpl[m.tpl].fileName.replace(/{name}/, m.name);
-      const props = m.props;
+      const fileName = tpl[m.tpl].fileName.replace(/{name}/, m.name).replace(/\.ejs$/, '');
       const compiledBody = ejs.render(tpl[m.tpl].body, m.props).replace(/\n\n+/g, '\n\n');
       fs.mkdirs(m.pathStr, function (err) {
         if (err) {
           throw new Error("Failed to create directory")
         }
       });
-      fs.outputFileSync(m.pathStr + fileName.replace(/\.ejs$/, ''), compiledBody);
-
-      // console.log("===== " + m.pathStr + fileName.replace(/\.ejs$/, ''))
-      // console.log(compiledBody, "\n");
+      fs.outputFileSync(m.pathStr + fileName, compiledBody);
     });
 
   }
@@ -65,7 +77,7 @@ export class MTemplate {
       exists[fn[1] + "\t"] = true;
     });
 
-    // ファイル読み込み
+    // read files
     const result: Tpl = {};
     dirArr.forEach(m => {
       const str = fs.readFileSync(dir + '/' + m).toString();

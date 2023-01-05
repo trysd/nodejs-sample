@@ -1,4 +1,6 @@
+import { ReservedWord } from './NReservedWord';
 import fs = require('fs-extra');
+import { Tpl } from './MTemplate';
 
 /** Converted type */
 export interface ConvertedJson {
@@ -10,20 +12,62 @@ export interface ConvertedJson {
 }
 
 /** Class to parse map JSON */
-export class AnalyzeJson {
+export class MJson {
 
   private static JsonURL = null;
   constructor(jsonUrl: string) {
-    AnalyzeJson.JsonURL = jsonUrl;
+    MJson.JsonURL = jsonUrl;
+  }
+
+  /**
+   * test json
+   * @param json 
+   */
+  public testJson(json: unknown, arr: ConvertedJson[], path: string[], tplKeys: string[]): void {
+    Object.keys(json).forEach(key => {
+      if (key.match(/\/$/)) {
+        // 階層
+        const _path = [...path, key];
+        this.testJson(json[key], arr, _path, tplKeys)
+      } else {
+        const keySplitted = key.split('=');
+        if (!tplKeys.includes(keySplitted[0])) {
+          if (!key.match(/=/)) {
+            throw new Error(
+              `path: ${path.join("") + key}`
+              + `\nAre you sure it's "${key + '/'}"?`
+              + `\nSpecifying a template "${keySplitted[0]}" that does not exist.`
+            )
+          }
+          throw new Error(
+            `path: ${path.join("") + key}`
+            + `\nSpecifying a template "${keySplitted[0]}" that does not exist.`
+          )
+        }
+
+        Object.keys(json[key]).forEach(f => {
+          if (ReservedWord.includes(f)) {
+            throw new Error(
+              `object: ${path.join("") + key}`
+              + `\nThe reserved word "${f}" cannot be used as an item name.`
+              );
+          }
+        });
+      }
+    });
   }
 
   /**
    * JSON parsing main
    */
-  public convertJson(): ConvertedJson[] {
+  public convertJson(tpl: Tpl): ConvertedJson[] {
 
     // read and parse
     const json = this.readJson();
+
+    // test json
+    const tplKeys = Object.keys(tpl);
+    this.testJson(JSON.parse(JSON.stringify(json)), [], [], tplKeys);
 
     // Convert to an array representing what should be created where
     const convertedJson: ConvertedJson[] = this.jsonToArray(json, [], []);
@@ -117,7 +161,7 @@ export class AnalyzeJson {
    * @returns 
    */
   public readJson(): unknown {
-    const jsonStr = fs.readFileSync(AnalyzeJson.JsonURL).toString();
+    const jsonStr = fs.readFileSync(MJson.JsonURL).toString();
     const json = JSON.parse(jsonStr);
     this.removeJsonCommentOut(json);
     return json;

@@ -1,4 +1,3 @@
-import path = require('path');
 import fs = require('fs-extra');
 
 export class MFile {
