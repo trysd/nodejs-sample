@@ -20,7 +20,7 @@ export class AnalyzeJson {
   /**
    * JSON parsing main
    */
-  public analyze(): ConvertedJson[] {
+  public convertJson(): ConvertedJson[] {
 
     // read and parse
     const json = this.readJson();
@@ -60,7 +60,7 @@ export class AnalyzeJson {
       ) {
         responseList.push({
           name: cj.name,
-          path: '../'.repeat(backCount),
+          path: backCount ? '../'.repeat(backCount) : './',
         })
       }
     });
@@ -75,7 +75,7 @@ export class AnalyzeJson {
     arrRef.forEach((obj, i) => {
       Object.keys(obj.props).forEach(key => {
         const val = obj.props[key];
-        if (val.match(/^(\.\.\/)*\@\w+/)) {
+        if (typeof val === "string" && val.match(/^(\.\.\/)*\@\w+/)) {
           this.putAnnotation(arrRef, obj, i, key)
         }
       });
@@ -97,6 +97,8 @@ export class AnalyzeJson {
         this.jsonToArray(json[key], arr, _path)
       } else {
         const keySplitted = key.split('=');
+        json[key].path = path.join("");
+        json[key].name = keySplitted[1];
         arr.push({
           props: json[key],
 
@@ -104,7 +106,6 @@ export class AnalyzeJson {
           name: keySplitted[1],
           path: path,
           pathStr: path.join("")
-
         })
       }
     });

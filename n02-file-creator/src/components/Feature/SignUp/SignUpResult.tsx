@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
-/** <%= comment %> */
-const <%= name %> = () => {
+/** user registration result. */
+const SignUpResult = () => {
   return (
     <>
       <div css={main}>
-        <%= name %>
+        SignUpResult
       </div>
     </>
   );
@@ -14,5 +14,5 @@ const <%= name %> = () => {
 const main = css`
   margin: 0.2em;
 `;
-export default <%= name %>
+export default SignUpResult
 

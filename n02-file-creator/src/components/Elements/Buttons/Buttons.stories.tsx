@@ -1,20 +1,18 @@
 import { Meta, Story } from '@storybook/react';
-<%_ for (var i = 0; i < brings.length; i++) { _%>
-import <%= brings[i].name %> from './<%= brings[i].name %>';
-<%_ } _%>
+import DialogOpen from './DialogOpen';
+import DialogClose from './DialogClose';
 
 const _Default = () => {
   return (
     <>
-      <%_ for (var i = 0; i < brings.length; i++) { _%>
-      <<%= brings[i].name %> />
-      <%_ } _%>
+      <DialogOpen />
+      <DialogClose />
     </>
   )
 }
 
 const meta: Meta = {
-  title: '<%= path %>',
+  title: 'src/components/Elements/Buttons/',
   component: _Default,
   parameters: {
     controls: { expanded: false },
