@@ -2,8 +2,8 @@
     "compilerOptions": {
         "outDir": "./dist",
         "sourceMap": true,
-        "module": "commonjs",
-        "target": "es5",
+        "module": "CommonJS",
+        "target": "ESNext",
         "lib": ["es6", "dom"],
         "moduleResolution": "node",
         "removeComments": true,

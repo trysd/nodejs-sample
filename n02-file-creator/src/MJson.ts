@@ -2,6 +2,7 @@ import { ReservedWord } from './NReservedWord';
 import fs = require('fs-extra');
 import { Tpl } from './MTemplate';
 import YAML = require('yaml');
+import { ArgvOptions } from './Core';
 
 /** Converted type */
 export interface ConvertedJson {
@@ -61,7 +62,7 @@ export class MJson {
   /**
    * JSON parsing main
    */
-  public convertJson(tpl: Tpl): ConvertedJson[] {
+  public convertJson(tpl: Tpl, options: ArgvOptions): ConvertedJson[] {
 
     // read and parse
     const json = this.readJson();
@@ -72,6 +73,9 @@ export class MJson {
 
     // Convert to an array representing what should be created where
     const convertedJson: ConvertedJson[] = this.jsonToArray(json, [], []);
+    if (options.preview) {
+      console.log(convertedJson);
+    }
 
     // Resolve annotation
     this.readAnnotation(convertedJson);
@@ -162,8 +166,22 @@ export class MJson {
    * @returns 
    */
   public readJson(): unknown {
-    const str = fs.readFileSync(MJson.JsonURL, 'utf8').toString();
-    const obj = MJson.JsonURL.match(/\.yml$|\.yaml$/)
+  
+    let fileName = "";
+    ['.json', '.yaml', 'yml'].forEach(tail => {
+      if (fs.pathExistsSync("./" + MJson.JsonURL + tail)) {
+        fileName = "./" + MJson.JsonURL + tail;
+      }
+    });
+    if (fileName === "") {
+      throw new Error(
+        `Can't find the zumen map file.`
+        + `\n"npx zumen@latest init" to create a sample first.`
+      );
+    }
+
+    const str = fs.readFileSync(fileName, 'utf8').toString();
+    const obj = !fileName.match(/\.json$/)
       ? YAML.parse(str)
       : JSON.parse(str);
     this.removeJsonCommentOut(obj);

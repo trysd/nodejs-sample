@@ -14,9 +14,9 @@ export class MFile {
     const dirent = fs.readdirSync(dirPath + '/' + routesStr, { withFileTypes: true });
     dirent.forEach(d => {
       if (d.isDirectory()) {
-        res = [...res, ...(this.readDir(dirPath, res, [...route, d.name]))];
+        this.readDir(dirPath, res, [...route, d.name]);
       } else {
-        res.push(routesStr + d.name)
+        res.push(routesStr + d.name);
       }
     })
     return res;
