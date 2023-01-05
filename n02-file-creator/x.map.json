@@ -1,15 +1,4 @@
 {
-  "//memo": {
-    ".": [
-      "・tsで操作するのは、フォルダとファイル作成",
-      "・後はプロパティをテンプレートに渡し、てテンプレート側でカスタマイズする",
-      "$component : カレントフォルダの component= で宣言済の name 配列を返す",
-      "../$component : 一つ下のフォルダの component= で宣言済の name 配列を返す",
-      "キーbringsは、単なる目印で、ejsに渡すだけ。期待する使用方法はbrings宣言等。exportも同様",
-      "JSON読み取り",
-      ""
-    ]
-  },
   "src/": {
     "components/": {
       "Elements/": {
