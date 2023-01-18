@@ -1,0 +1,8 @@
+node_modules/
+dist/
+out/
+logs/
+.DS_Store
+RMemo.md
+RHint.md
+config.json

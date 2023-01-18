@@ -1,0 +1,84 @@
+version: '3.7'
+
+services:
+  # postgresql:
+  #   container_name: comx_db
+  #   build:
+  #     context: ./docker/db
+  #     dockerfile: Dockerfile
+  #   image: devenv/postgresql
+  #   env_file:
+  #     - docker/db/.env
+  #   ports:
+  #     - 35432:5432
+  #   networks:
+  #     - container_link
+  #   volumes:
+  #     - ./docker/db/init:/docker-entrypoint-initdb.d
+  #     #- ./docker/database/postgresql_data:/var/lib/postgresql/data:rw
+  #     # - dbdata:/var/lib/postgresql/data
+  #   environment:
+  #     POSTGRES_PASSWORD: postgres
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_DB: postgres
+  #     TZ: Asia/Tokyo
+  #     POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --locale=C'
+  #   logging:
+  #     driver: json-file
+  #     options:
+  #       max-size: '5m'
+  #       max-file: '1'
+
+  app:
+    container_name: comx
+    build:
+      context: ./
+      dockerfile: docker/app/Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/nodejs_comx
+    depends_on:
+      - postgresql
+    networks:
+      - container_link
+    tty: true
+    environment:
+      TZ: Asia/Tokyo
+    #restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: '5m'
+        max-file: '1'
+
+  # pgadmin4:
+  #   container_name: comx_pg
+  #   image: dpage/pgadmin4:6
+  #   env_file:
+  #     - docker/pgadmin4/.env
+  #   depends_on:
+  #     - postgresql
+  #   ports:
+  #     - 35433:80
+  #   networks:
+  #     - container_link
+  #   # volumes:
+  #   #   - pgadmin4_data:/var/lib/pgadmin:rw
+  #   environment:
+  #     TZ: Asia/Tokyo
+  #   logging:
+  #     driver: json-file
+  #     options:
+  #       max-size: '5m'
+  #       max-file: '1'
+
+networks:
+  default:
+    external:
+      name: bridge
+  container_link:
+    name: n01
+
+volumes:
+  dbdata:
